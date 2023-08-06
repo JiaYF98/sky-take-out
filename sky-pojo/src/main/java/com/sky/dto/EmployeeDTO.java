@@ -20,5 +20,7 @@ public class EmployeeDTO implements Serializable {
 
     private String idNumber;
 
+    private Integer status;
+
     private LocalDateTime updateTime;
 }

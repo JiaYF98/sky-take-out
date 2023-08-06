@@ -67,6 +67,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employee;
     }
 
+    /**
+     * 新增员工
+     *
+     * @param employeeDTO
+     */
     @Override
     public void save(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
@@ -89,6 +94,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.insert(employee);
     }
 
+    /**
+     * 员工分页查询
+     *
+     * @param employeePageQueryDTO
+     * @return
+     */
     @Override
     public PageResult<EmployeeDTO> pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         // 开始分页查询
@@ -104,6 +115,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                 })
                 .collect(Collectors.toList());
         return new PageResult<>(total, result);
+    }
+
+    /**
+     * 启用、禁用员工账号
+     *
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
     }
 
 }
