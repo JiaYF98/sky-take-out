@@ -6,3 +6,8 @@ sky:
     database: sky_take_out
     username: root
     password: abc123
+  alioss:
+    endpoint: test
+    access-key-id: test
+    access-key-secret: test
+    bucket-name: /home/embrace/source_save_path/
