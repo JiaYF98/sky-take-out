@@ -53,7 +53,7 @@ public class CommonController {
             // 保存文件
             file.transferTo(new File(bucketName, fileName));
 
-            return Result.success(bucketName + fileName);
+            return Result.success("file://" + bucketName + fileName);
         } catch (IOException e) {
             log.error("文件上传失败：{}", e);
         }

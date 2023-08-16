@@ -102,17 +102,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     public PageResult<EmployeeDTO> pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         // 开始分页查询
         PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+        Page<EmployeeDTO> page = employeeMapper.pageQuery(employeePageQueryDTO);
 
-        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
-        long total = page.getTotal();
-        List<EmployeeDTO> result = page.getResult().stream()
-                .map(employee -> {
-                    EmployeeDTO employeeDTO = new EmployeeDTO();
-                    BeanUtils.copyProperties(employee, employeeDTO);
-                    return employeeDTO;
-                })
-                .collect(Collectors.toList());
-        return new PageResult<>(total, result);
+        return new PageResult<>(page.getTotal(), page.getResult());
     }
 
     /**

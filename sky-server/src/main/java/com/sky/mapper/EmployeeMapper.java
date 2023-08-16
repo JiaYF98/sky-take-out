@@ -2,6 +2,7 @@ package com.sky.mapper;
 
 import com.github.pagehelper.Page;
 import com.sky.annotation.AutoFill;
+import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeePageQueryDTO;
 import com.sky.entity.Employee;
 import com.sky.enumeration.OperationType;
@@ -38,7 +39,7 @@ public interface EmployeeMapper {
      * @param employeePageQueryDTO
      * @return
      */
-    Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+    Page<EmployeeDTO> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
     /**
      * 更新员工信息
