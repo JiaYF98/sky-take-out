@@ -12,6 +12,7 @@ import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
 import com.sky.mapper.SetmealDishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,6 +34,9 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+
+    @Autowired
+    private SetmealMapper setmealMapper;
 
     /**
      * 新增菜品和风味数据
@@ -88,8 +93,8 @@ public class DishServiceImpl implements DishService {
         });
 
         // 判断当前菜品是否能够删除--是否被套餐关联
-        Long numbers = setmealDishMapper.getSetmealIdsByDishIds(ids);
-        if (numbers > 0) {
+        List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(ids);
+        if (setmealIds != null && !setmealIds.isEmpty()) {
             throw new DeletionNotAllowedException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
         }
 
@@ -162,11 +167,30 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public List<DishVO> getByCategoryId(Long categoryId) {
-        return dishMapper.getByCategoryId(categoryId);
+        Dish dish = Dish.builder()
+                .categoryId(categoryId)
+                .status(StatusConstant.ENABLE)
+                .build();
+        return dishMapper.list(dish);
     }
 
+    /**
+     * 设置菜品起售、停售
+     *
+     * @param status
+     * @param id
+     */
     @Override
     public void setStatus(Integer status, Long id) {
+        // 如果停售，则将该关联的套餐停售
+        if (status.equals(StatusConstant.DISABLE)) {
+            List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(Collections.singletonList(id));
+            setmealIds.forEach(setmealId -> {
+                setmealMapper.setStatus(status, setmealId);
+            });
+        }
+
+        // 将该菜品停售
         dishMapper.setStatus(status, id);
     }
 }

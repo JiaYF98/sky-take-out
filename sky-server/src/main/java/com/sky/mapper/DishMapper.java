@@ -69,10 +69,10 @@ public interface DishMapper {
     /**
      * 根据分类id查询菜品
      *
-     * @param categoryId
+     * @param dish
      * @return
      */
-    List<DishVO> getByCategoryId(Long categoryId);
+    List<DishVO> list(Dish dish);
 
     /**
      * 菜品起售、停售
